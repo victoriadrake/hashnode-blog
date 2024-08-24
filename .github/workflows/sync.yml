@@ -1,0 +1,53 @@
+name: Sync Posts to Site Repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout hashnode-blog repo
+      uses: actions/checkout@v3
+      with:
+        repository: victoriadrake/hashnode-blog
+        path: hashnode-blog
+
+    - name: Checkout victoriadrake.github.io repo
+      uses: actions/checkout@v3
+      with:
+        repository: victoriadrake/victoriadrake.github.io
+        path: victoriadrake.github.io
+        token: $%20secrets.GITHUB_TOKEN%20
+
+    - name: Install yq
+      run: |
+        sudo apt-get update && sudo apt-get install -y yq
+
+    - name: Copy markdown files to victoriadrake.github.io
+      run: |
+        for file in $(find hashnode-blog/ -name '*.md'); do
+          # Extract slug from frontmatter using yq
+          slug=$(yq e '.slug' "$file")
+          # Check if slug is not empty
+          if [ -z "$slug" ]; then
+            echo "Slug not found in $file"
+            exit 1
+          fi
+          # Create the destination directory
+          mkdir -p victoriadrake.github.io/content/$slug
+          # Copy the markdown file
+          cp "$file" victoriadrake.github.io/content/$slug/index.md
+        done
+
+    - name: Commit and push changes to victoriadrake.github.io
+      run: |
+        cd victoriadrake.github.io
+        git config --global user.name "workflow"
+        git config --global user.email "ihalp@victoria.dev"
+        git add .
+        git commit -m "Sync new blog posts from hashnode-blog"
+        git push origin main
