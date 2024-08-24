@@ -21,7 +21,7 @@ jobs:
       with:
         repository: victoriadrake/victoriadrake.github.io
         path: victoriadrake.github.io
-        token: $%20secrets.GITHUB_TOKEN%20
+        token: ${{ secrets.TOKEN }}
 
     - name: Install yq
       run: |
