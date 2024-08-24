@@ -25,8 +25,9 @@ jobs:
 
     - name: Install yq
       run: |
-        sudo apt-get update && sudo apt-get install -y yq
-
+        wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+        chmod +x /usr/bin/yq
+  
     - name: Copy markdown files to victoriadrake.github.io
       run: |
         for file in $(find hashnode-blog/ -name '*.md'); do
