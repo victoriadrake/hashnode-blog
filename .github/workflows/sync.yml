@@ -32,8 +32,8 @@ jobs:
           # Replace the first line with the frontmatter and date
           sed -i "1s/^---$/---\ndate: $current_date/" "$file"
           
-          # Reformat tags in the frontmatter only
-          awk '/^tags:/{gsub(/, /, ",\n    - "); sub(": ", ":\n    - ")}1' "$file" > temp.md && mv temp.md "$file"
+          # Reformat tags in the frontmatter, removing commas
+          awk '/^tags:/{gsub(/, /, "\n    - "); sub(": ", ":\n    - ")}1' "$file" > temp.md && mv temp.md "$file"
           
           # Copy the markdown file to the content/posts directory
           cp "$file" "victoriadrake.github.io/content/posts/"
