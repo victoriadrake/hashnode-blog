@@ -42,4 +42,4 @@ jobs:
         git config --global user.email "ihalp@victoria.dev"
         git add .
         git commit -m "Sync new blog posts from hashnode-blog"
-        git push origin main
+        git push origin master
