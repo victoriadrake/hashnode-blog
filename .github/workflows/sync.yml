@@ -33,8 +33,8 @@ jobs:
           sed -i '/^tags:/s/: \(.*\)/:\n    - \1/' "$file"
           sed -i 's/, /,\n    - /g' "$file"
           
-          # Add the current date to the frontmatter
-          sed -i "1i date: $current_date" "$file"
+          # Insert the current date after the first '---' line
+          sed -i "/^---/a date: $current_date" "$file"
           
           # Copy the markdown file to the content/posts directory
           cp "$file" "victoriadrake.github.io/content/posts/"
