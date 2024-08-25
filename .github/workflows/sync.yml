@@ -23,12 +23,19 @@ jobs:
         path: victoriadrake.github.io
         token: ${{ secrets.TOKEN }}
 
-    - name: Reformat tags in markdown files and copy to victoriadrake.github.io
+    - name: Reformat tags and add date to markdown files, then copy to victoriadrake.github.io
       run: |
+        # Get the current date in the format YYYY-MM-DDTHH:MM:SS.sssZ
+        current_date=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+        
         for file in $(find hashnode-blog/ -name '*.md'); do
           # Reformat tags in the frontmatter
           sed -i '/^tags:/s/: \(.*\)/:\n    - \1/' "$file"
           sed -i 's/, /,\n    - /g' "$file"
+          
+          # Add the current date to the frontmatter
+          sed -i "1i date: $current_date" "$file"
+          
           # Copy the markdown file to the content/posts directory
           cp "$file" "victoriadrake.github.io/content/posts/"
         done
