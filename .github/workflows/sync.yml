@@ -23,9 +23,12 @@ jobs:
         path: victoriadrake.github.io
         token: ${{ secrets.TOKEN }}
 
-    - name: Copy markdown files to victoriadrake.github.io
+    - name: Reformat tags in markdown files and copy to victoriadrake.github.io
       run: |
         for file in $(find hashnode-blog/ -name '*.md'); do
+          # Reformat tags in the frontmatter
+          sed -i '/^tags:/s/: \(.*\)/:\n    - \1/' "$file"
+          sed -i 's/, /,\n    - /g' "$file"
           # Copy the markdown file to the content/posts directory
           cp "$file" "victoriadrake.github.io/content/posts/"
         done
