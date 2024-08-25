@@ -23,7 +23,7 @@ jobs:
         path: victoriadrake.github.io
         token: ${{ secrets.TOKEN }}
 
-    - name: Reformat tags and replace first line with date, then copy to victoriadrake.github.io
+    - name: Reformat tags, replace first line with date, rename cover to image, then copy to victoriadrake.github.io
       run: |
         # Get the current date in the format YYYY-MM-DDTHH:MM:SS.sssZ
         current_date=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
@@ -34,6 +34,9 @@ jobs:
           
           # Reformat tags in the frontmatter, removing commas
           awk '/^tags:/{gsub(/, /, "\n    - "); sub(": ", ":\n    - ")}1' "$file" > temp.md && mv temp.md "$file"
+          
+          # Rename the 'cover' key to 'image' in the frontmatter
+          sed -i 's/^cover:/image:/' "$file"
           
           # Copy the markdown file to the content/posts directory
           cp "$file" "victoriadrake.github.io/content/posts/"
