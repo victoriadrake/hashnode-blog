@@ -23,17 +23,11 @@ jobs:
         path: victoriadrake.github.io
         token: ${{ secrets.TOKEN }}
 
-    - name: Copy markdown files to victoriadrake.github.io with date-prefixed filenames
+    - name: Copy markdown files to victoriadrake.github.io
       run: |
-        # Get the current date in YYYY-MM-DD format
-        current_date=$(date +%Y-%m-%d)
         for file in $(find hashnode-blog/ -name '*.md'); do
-          # Extract the base name of the file (without the directory path)
-          base_name=$(basename "$file")
-          # Create the new file name with the date prefixed
-          new_file_name="${current_date}-${base_name}"
-          # Copy the markdown file to the content/posts directory with the new name
-          cp "$file" "victoriadrake.github.io/content/posts/$new_file_name"
+          # Copy the markdown file to the content/posts directory
+          cp "$file" "victoriadrake.github.io/content/posts/"
         done
 
     - name: Commit and push changes to victoriadrake.github.io
