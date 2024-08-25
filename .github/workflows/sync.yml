@@ -1,4 +1,4 @@
-name: Sync Posts to Site Repo
+name: Sync Markdown to victoriadrake.github.io
 
 on:
   push:
@@ -23,26 +23,16 @@ jobs:
         path: victoriadrake.github.io
         token: ${{ secrets.TOKEN }}
 
-    - name: Install yq
+    - name: Copy markdown files to victoriadrake.github.io with date-based directories
       run: |
-        wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O ~/yq
-        chmod +x ~/yq
-        sudo mv ~/yq /usr/local/bin/yq
-  
-    - name: Copy markdown files to victoriadrake.github.io
-      run: |
+        # Get the current date in YYYY-MM-DD format
+        current_date=$(date +%Y-%m-%d)
         for file in $(find hashnode-blog/ -name '*.md'); do
-          # Extract slug from frontmatter using yq
-          slug=$(yq e '.slug' "$file")
-          # Check if slug is not empty
-          if [ -z "$slug" ]; then
-            echo "Slug not found in $file"
-            exit 1
-          fi
-          # Create the destination directory
-          mkdir -p victoriadrake.github.io/content/$slug
-          # Copy the markdown file
-          cp "$file" victoriadrake.github.io/content/$slug/index.md
+          # Create a new directory based on the current date
+          target_dir="victoriadrake.github.io/content/$current_date"
+          mkdir -p $target_dir
+          # Copy the markdown file to the date-based directory
+          cp "$file" "$target_dir/"
         done
 
     - name: Commit and push changes to victoriadrake.github.io
