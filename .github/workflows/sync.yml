@@ -23,7 +23,7 @@ jobs:
         path: victoriadrake.github.io
         token: ${{ secrets.TOKEN }}
 
-    - name: Reformat tags and add date to markdown files, then copy to victoriadrake.github.io
+    - name: Reformat tags and replace first line with date, then copy to victoriadrake.github.io
       run: |
         # Get the current date in the format YYYY-MM-DDTHH:MM:SS.sssZ
         current_date=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
@@ -33,10 +33,8 @@ jobs:
           sed -i '/^tags:/s/: \(.*\)/:\n    - \1/' "$file"
           sed -i 's/, /,\n    - /g' "$file"
           
-          # Insert the current date after the first '---' line only if a date is not already present
-          if ! grep -q "^date:" "$file"; then
-            sed -i "/^---/!b;/^---/{n;s/^/date: $current_date\n/}" "$file"
-          fi
+          # Replace the first line with the frontmatter and date
+          sed -i "1s/^---$/---\ndate: $current_date/" "$file"
           
           # Copy the markdown file to the content/posts directory
           cp "$file" "victoriadrake.github.io/content/posts/"
