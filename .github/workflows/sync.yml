@@ -33,8 +33,10 @@ jobs:
           sed -i '/^tags:/s/: \(.*\)/:\n    - \1/' "$file"
           sed -i 's/, /,\n    - /g' "$file"
           
-          # Insert the current date after the first '---' line
-          sed -i "/^---/a date: $current_date" "$file"
+          # Insert the current date after the first '---' line only if 'date:' does not already exist
+          if ! grep -q "^date:" "$file"; then
+            sed -i "/^---/a date: $current_date" "$file"
+          fi
           
           # Copy the markdown file to the content/posts directory
           cp "$file" "victoriadrake.github.io/content/posts/"
