@@ -33,9 +33,9 @@ jobs:
           sed -i '/^tags:/s/: \(.*\)/:\n    - \1/' "$file"
           sed -i 's/, /,\n    - /g' "$file"
           
-          # Insert the current date after the first '---' line only if 'date:' does not already exist
+          # Insert the current date after the first '---' line only if a date is not already present
           if ! grep -q "^date:" "$file"; then
-            sed -i "/^---/a date: $current_date" "$file"
+            sed -i "/^---/!b;/^---/{n;s/^/date: $current_date\n/}" "$file"
           fi
           
           # Copy the markdown file to the content/posts directory
